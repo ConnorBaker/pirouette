@@ -1,9 +1,13 @@
+name: Build and Test
+
 on:
-  push:
-    branches:
-      - main
-      - dev
-  pull_request:
+  - push
+  - pull_request
+  - workflow_dispatch
+
+defaults:
+  run:
+    shell: bash
 
 jobs:
   # TODO: Add a linting/formatting job to run in parallel
@@ -11,9 +15,6 @@ jobs:
     # Develop caches the latest development environment for us
     name: develop
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        shell: bash
     steps:
     - uses: actions/checkout@v3
     
@@ -37,9 +38,6 @@ jobs:
     name: build-and-test
     runs-on: ubuntu-latest
     needs: develop
-    defaults:
-      run:
-        shell: bash
     steps:
     - uses: actions/checkout@v3
     
@@ -68,4 +66,4 @@ jobs:
 
     # Test
     - name: Run tests pirouette
-      run: nix --verbose run .#pirouette:test:spec
+      run: nix --verbose run .#pirouette:test:spec -- --json-path out.json --markdown-path $GITHUB_STEP_SUMMARY

@@ -1,0 +1,7 @@
+packages: .
+source-repository-package
+  type: git
+  location: https://github.com/connorbaker/tasty-json.git
+  tag: b84c0ab0bcafba7a403614cc5e065df4daa06b1a
+  subdir: tasty-json-reporter
+  --sha256: sha256-HU7RWdKpQwFHxeXDQwYx10UZjADB0Ah1dB2250K5y/Y=

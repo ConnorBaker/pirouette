@@ -1,6 +1,4 @@
-verbatim:
-  cabal-version: 2.4
-
+spec-version: 0.34.2
 name: pirouette
 version: 2.0.0
 extra-source-files:
@@ -10,36 +8,35 @@ extra-source-files:
 dependencies:
   - ansi-terminal
   - base >= 4.9 && < 5
-  - data-default
-  - mtl >= 2.2.2
-  - interpolate
   - bytestring
   - containers
-  - extra
-  - text
-  - prettyprinter
-  - megaparsec
-  - parser-combinators
-  - uniplate
+  - data-default
   - deriving-compat
-  - template-haskell
-  - tasty
-  - tasty-hunit
-  - tasty-quickcheck
-  - tasty-expected-failure
-  - QuickCheck
+  - extra
   - haskell-stack-trace-plugin
-  - parallel
+  - interpolate
+  - megaparsec
+  - mtl >= 2.2.2
   - optics-core
   - optics-th
+  - parallel
+  - parser-combinators
+  - prettyprinter
+  - QuickCheck
+  - tasty
+  - tasty-expected-failure
+  - tasty-hunit
+  - tasty-quickcheck
+  - template-haskell
+  - text
+  - uniplate
   # PureSMT deps
   - process
   - typed-process
 
 library:
   source-dirs: src
-  ghc-options:
-    -Wall
+  ghc-options: -Wall
     -Wno-orphans
 
 tests:
@@ -49,19 +46,18 @@ tests:
       - tests/unit
     dependencies:
       - pirouette
-    ghc-options:
-      -threaded
+      - tasty-json-reporter
+    ghc-options: -threaded
 
-## executables:
-##   spec-prof:
-##     main: Spec.hs
-##     source-dirs:
-##       - tests/unit
-##     dependencies:
-##       - pirouette
-##     ghc-options:
-##       -threaded
-##       -fprof-auto
-##       -fexternal-interpreter
-##       "-with-rtsopts=-N -p -s -h"
-
+# executables:
+#   spec-prof:
+#     main: Spec.hs
+#     source-dirs:
+#       - tests/unit
+#     dependencies:
+#       - pirouette
+#     ghc-options:
+#       -threaded
+#       -fprof-auto
+#       -fexternal-interpreter
+#       "-with-rtsopts=-N -p -s -h"

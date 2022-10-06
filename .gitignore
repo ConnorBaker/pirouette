@@ -7,3 +7,6 @@ temporary.cfg
 states/
 *.vscode
 result/
+out.*
+# Ignore the local cabal.project because it contains the path to tasty-json in the local nix store
+cabal.project.local

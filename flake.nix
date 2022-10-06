@@ -5,6 +5,7 @@
     haskell-nix.url = "github:input-output-hk/haskell.nix";
     nixpkgs.follows = "haskell-nix/nixpkgs-unstable";
     flake-utils.url = "github:numtide/flake-utils";
+    tasty-json.url = "github:connorbaker/tasty-json";
   };
 
   outputs = {
@@ -12,51 +13,55 @@
     haskell-nix,
     nixpkgs,
     flake-utils,
+    tasty-json,
   }:
     flake-utils.lib.eachSystem ["x86_64-linux"] (system: let
+      tasty-json-reporter.src = "${tasty-json}";
+      compiler-nix-name = "ghc902";
+      index-state = "2022-04-07T00:00:00Z";
       overlays = [
         haskell-nix.overlay
         (final: prev: let
-          inherit (final) makeWrapper cvc4;
-          makeBinPath = final.lib.makeBinPath;
-          ghcVersion = "902";
-          compiler-nix-name = "ghc${ghcVersion}";
-          cabal-install = final.haskell-nix.cabal-install.${compiler-nix-name};
-          haskell-language-server = final.haskell-language-server;
-          index-state = "2022-04-07T00:00:00Z";
+          # Declare common bindings we'll use later
+          # TODO: Isn't this the same haskell-nix as the inputs above?
+          #       Can we use inherit earlier?
+          inherit (final) makeWrapper haskell-nix;
+          cabal-install = haskell-nix.cabal-install.${compiler-nix-name};
         in {
           pirouette =
-            final.haskell-nix.cabalProject'
+            haskell-nix.cabalProject'
             {
               inherit compiler-nix-name cabal-install index-state;
               src = ./.;
               modules = [
                 {
                   packages = {
-                    pirouette.components.tests.spec = {
-                      build-tools = [makeWrapper cvc4];
-                      postInstall = ''wrapProgram $out/bin/spec --set PATH ${makeBinPath [cvc4]}'';
+                    # We must supply the location of the source file otherwise
+                    # Cabal will complain about not knowing how to unpack the
+                    # given archive
+                    inherit tasty-json-reporter;
+                    pirouette.components.tests.spec = with pkgs; {
+                      build-tools = [makeWrapper];
+                      postInstall = ''wrapProgram $out/bin/spec --set PATH ${lib.makeBinPath [cvc4]}'';
                     };
                   };
                 }
               ];
-              shell = {
-                tools = {
-                  ormolu = {};
-                  hpack = {};
-                  hlint = {};
-                };
-                buildInputs =
-                # We specify cabal-install and haskell-language-server
-                # here for greater control over who provides them and the
-                # version we use.
-                  [cabal-install haskell-language-server]
-                  ++ (with pkgs; [
-                    xdot
-                    haskellPackages.graphmod
-                    cvc4
-                  ]);
-              };
+              # We prefer shell.buildInputs to shell.tools because we can
+              # specify cabal-install and haskell-language-server instead of
+              # using a differently packaged version.
+              # For example, HLS offered through shell.tools does not include
+              # the wrapper, which some IDEs and plugins use exclusively.
+              shell.buildInputs = with pkgs; [
+                cabal-install
+                cvc4
+                haskell-language-server
+                haskellPackages.graphmod
+                hlint
+                hpack
+                ormolu
+                xdot
+              ];
             };
         })
       ];
@@ -69,7 +74,14 @@
       (removeAttrs flake ["devShell"])
       // {
         # devShell was deprecated; update the flake attribute set.
-        devShells.default = flake.devShell;
+        devShells.default = flake.devShell.overrideAttrs (old: {
+          shellHook = ''
+            ${old.shellHook or ""}
+            echo "Regenerating cabal files..."
+            bash regenerate_cabal_files.sh
+            echo "Entering shell..."
+          '';
+        });
         formatter = pkgs.alejandra;
       });
 }
