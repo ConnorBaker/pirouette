@@ -18,4 +18,6 @@ cat <<EOF > cabal.project.local
 packages: . $TASTY_JSON_PATH/tasty-json-reporter
 EOF
 
+cabal freeze
+
 hpack
