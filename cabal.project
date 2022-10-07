@@ -1,7 +1,8 @@
 packages: .
+jobs: $ncpus
 source-repository-package
   type: git
   location: https://github.com/connorbaker/tasty-json.git
-  tag: b84c0ab0bcafba7a403614cc5e065df4daa06b1a
+  tag: 53ba5a5f8e14a832814c2256f099a8e11fe77c80
   subdir: tasty-json-reporter
-  --sha256: sha256-HU7RWdKpQwFHxeXDQwYx10UZjADB0Ah1dB2250K5y/Y=
+  --sha256: sha256-J25nmsVJszl6iTF4QAMU3whfFON16DDW5dIYyquI9wU=

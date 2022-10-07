@@ -59,6 +59,7 @@
                 haskellPackages.graphmod
                 hlint
                 hpack
+                jq
                 ormolu
                 xdot
               ];
