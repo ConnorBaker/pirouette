@@ -15,29 +15,37 @@ jobs:
     name: build-and-test
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
-    
-    - uses: haskell/actions/setup@v2
-      id: setup-haskell-build-env
-      with:
-        ghc-version: '9.0.2'
+      - uses: actions/checkout@v3
 
-    - name: Cache Cabal build artifacts
-      uses: actions/cache@v3
-      with:
-        path: |
-          ${{ steps.setup-haskell-build-env.outputs.cabal-store }}
-          dist-newstyle
-        key: ${{ runner.os }}-cabal-ghc902-${{ hashFiles('cabal.project.freeze') }}
-        restore-keys: ${{ runner.os }}-cabal-ghc902
+      - uses: haskell/actions/setup@v2
+        id: setup-haskell-build-env
+        with:
+          ghc-version: "9.0.2"
 
-    # Build
-    - name: Build library pirouette
-      run: cabal build --verbose pirouette
-    
-    - name: Build tests pirouette
-      run: cabal build --verbose spec
+      - name: Install CVC4 1.8
+        run: |
+          wget https://github.com/CVC4/CVC4/releases/download/1.8/cvc4-1.8-x86_64-linux-opt
+          mv cvc4-1.8-x86_64-linux-opt cvc4
+          chmod +x cvc4
+          sudo mv cvc4 /usr/local/bin
 
-    # Test
-    - name: Run tests pirouette
-      run: cabal run spec -- --json-path out.json --markdown-path $GITHUB_STEP_SUMMARY
+      - name: Cache ~/.cabal/packages, ~/.cabal/store and dist-newstyle
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.cabal/packages
+            ~/.cabal/store
+            dist-newstyle
+          key: ${{ runner.os }}-${{ runner.arch }}-cabal-ghc902-${{ hashFiles('**/*.cabal', '**/cabal.project', '**/cabal.project.freeze') }}
+          restore-keys: ${{ runner.os }}-${{ runner.arch }}-cabal-ghc902-
+
+      # Build
+      - name: Build library pirouette
+        run: cabal build --verbose pirouette
+
+      - name: Build tests pirouette
+        run: cabal build --verbose spec
+
+      # Test
+      - name: Run tests pirouette
+        run: cabal run spec -- --json-path out.json --markdown-path $GITHUB_STEP_SUMMARY

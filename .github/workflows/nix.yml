@@ -16,54 +16,60 @@ jobs:
     name: develop
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
-    
-    - name: Set up nix
-      uses: ./.github/actions/setup
-      with:
-        REPO_AUTH_TOKEN: ${{ secrets.REPO_AUTH_TOKEN }}
+      - uses: actions/checkout@v3
 
-    - uses: cachix/cachix-action@v10
-      with:
-        name: haskell-library-pirouette
-        authToken: ${{ secrets.CACHIX_AUTH_TOKEN }}
+      - name: Set up nix
+        uses: ./.github/actions/setup
+        with:
+          REPO_AUTH_TOKEN: ${{ secrets.REPO_AUTH_TOKEN }}
 
-    - name: Build development environment
-      run: nix -L develop --profile dev-profile
+      - uses: cachix/cachix-action@v10
+        with:
+          name: haskell-library-pirouette
+          authToken: ${{ secrets.CACHIX_AUTH_TOKEN }}
 
-    - name: Cache development environment
-      run: cachix --verbose push --omit-deriver --compression-level 9 haskell-library-pirouette ./dev-profile
+      - name: Enable problem matcher
+        run: echo "::add-matcher::./.github/haskell-problem-matcher.json"
+
+      - name: Build development environment
+        run: nix -L develop --profile dev-profile
+
+      - name: Cache development environment
+        run: cachix --verbose push --omit-deriver --compression-level 9 haskell-library-pirouette ./dev-profile
 
   build-and-test:
     name: build-and-test
     runs-on: ubuntu-latest
     needs: develop
     steps:
-    - uses: actions/checkout@v3
-    
-    - name: Set up nix
-      uses: ./.github/actions/setup
-      with:
-        REPO_AUTH_TOKEN: ${{ secrets.REPO_AUTH_TOKEN }}
+      - uses: actions/checkout@v3
 
-    - uses: cachix/cachix-action@v10
-      with:
-        name: haskell-library-pirouette
-        authToken: ${{ secrets.CACHIX_AUTH_TOKEN }}
+      - name: Set up nix
+        uses: ./.github/actions/setup
+        with:
+          REPO_AUTH_TOKEN: ${{ secrets.REPO_AUTH_TOKEN }}
 
-    # Build
-    - name: Build library pirouette
-      run: nix -L build .#pirouette:lib:pirouette
-    
-    - name: Cache library pirouette
-      run: cachix --verbose push --omit-deriver --compression-level 9 haskell-library-pirouette ./result
-    
-    - name: Build tests pirouette
-      run: nix -L build .#pirouette:test:spec
-    
-    - name: Cache tests pirouette
-      run: cachix --verbose push --omit-deriver --compression-level 9 haskell-library-pirouette ./result
+      - uses: cachix/cachix-action@v10
+        with:
+          name: haskell-library-pirouette
+          authToken: ${{ secrets.CACHIX_AUTH_TOKEN }}
 
-    # Test
-    - name: Run tests pirouette
-      run: nix --verbose run .#pirouette:test:spec -- --json-path out.json --markdown-path $GITHUB_STEP_SUMMARY
+      - name: Enable problem matcher
+        run: echo "::add-matcher::./github/haskell-problem-matcher.json"
+
+      # Build
+      - name: Build library pirouette
+        run: nix -L build .#pirouette:lib:pirouette
+
+      - name: Cache library pirouette
+        run: cachix --verbose push --omit-deriver --compression-level 9 haskell-library-pirouette ./result
+
+      - name: Build tests pirouette
+        run: nix -L build .#pirouette:test:spec
+
+      - name: Cache tests pirouette
+        run: cachix --verbose push --omit-deriver --compression-level 9 haskell-library-pirouette ./result
+
+      # Test
+      - name: Run tests pirouette
+        run: nix --verbose run .#pirouette:test:spec -- --json-path out.json --markdown-path $GITHUB_STEP_SUMMARY
