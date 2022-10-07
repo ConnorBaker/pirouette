@@ -1,0 +1,20 @@
+name: Format - Ormolu
+
+on:
+  - push
+  - pull_request
+  - workflow_dispatch
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  ormolu:
+    name: ormolu
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Run Ormolu
+        uses: mrkkrp/ormolu-action@v7

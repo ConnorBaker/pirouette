@@ -1,4 +1,4 @@
-name: Cabal
+name: Build - Cabal
 
 on:
   - push
@@ -10,15 +10,6 @@ defaults:
     shell: bash
 
 jobs:
-  lint:
-    name: develop
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - uses: ./.github/actions/lint
-        with:
-          directories: '["src/", "tests/"]'
-
   build-and-test:
     name: build-and-test
     runs-on: ubuntu-latest
