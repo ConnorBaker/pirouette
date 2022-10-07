@@ -101,7 +101,7 @@ instance (Traversable m) => Traversable (WeightedListT m) where
   sequenceA Fail = pure Fail
   sequenceA (Yield x w) = Yield <$> x <*> sequenceA w
   sequenceA (Weight a w) = Weight a <$> sequenceA w
-  sequenceA (Action w) = Action <$> sequenceA (sequenceA <$> w)
+  sequenceA (Action w) = Action <$> traverse sequenceA w
 
 toList :: Monad m => WeightedListT m a -> m [a]
 toList Fail = pure []

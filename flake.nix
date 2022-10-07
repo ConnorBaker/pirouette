@@ -23,8 +23,6 @@
         haskell-nix.overlay
         (final: prev: let
           # Declare common bindings we'll use later
-          # TODO: Isn't this the same haskell-nix as the inputs above?
-          #       Can we use inherit earlier?
           inherit (final) makeWrapper haskell-nix;
           cabal-install = haskell-nix.cabal-install.${compiler-nix-name};
         in {
@@ -47,6 +45,10 @@
                   };
                 }
               ];
+              shell.tools = {
+                ormolu = "0.5.0.1";
+                hlint = "3.5";
+              };
               # We prefer shell.buildInputs to shell.tools because we can
               # specify cabal-install and haskell-language-server instead of
               # using a differently packaged version.
@@ -57,10 +59,8 @@
                 cvc4
                 haskell-language-server
                 haskellPackages.graphmod
-                hlint
                 hpack
                 jq
-                ormolu
                 xdot
               ];
             };
