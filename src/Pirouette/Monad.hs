@@ -227,12 +227,12 @@ complementWithBuiltinPrelude (PrtUnorderedDefs m) =
     combine spnm def preludeDef
       | def ~==~ preludeDef = def
       | otherwise =
-        error $
-          unlines
-            [ "Conflicting definitions for " ++ show spnm,
-              "prelude: " ++ renderSingleLineStr (pretty preludeDef),
-              "user: " ++ renderSingleLineStr (pretty def)
-            ]
+          error $
+            unlines
+              [ "Conflicting definitions for " ++ show spnm,
+                "prelude: " ++ renderSingleLineStr (pretty preludeDef),
+                "user: " ++ renderSingleLineStr (pretty def)
+              ]
 
 instance (LanguageBuiltins lang, Monad m) => PirouetteReadDefs lang (ReaderT (PrtUnorderedDefs lang) m) where
   prtAllDefs = asks prtUODecls

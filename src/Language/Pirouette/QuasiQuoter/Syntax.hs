@@ -242,11 +242,11 @@ funTerm _ _ _ = error "Unexpected parameters in function declaration"
 substTyVarType :: String -> String -> Ty lang -> Ty lang
 substTyVarType i i' (TyLam s ki ty)
   | s == i' =
-    -- Naming conflict: append `_` before renaming to avoid conflict
-    TyLam
-      (s <> "_")
-      ki
-      (substTyVarType i i' . substTyVarType s (s <> "_") $ ty)
+      -- Naming conflict: append `_` before renaming to avoid conflict
+      TyLam
+        (s <> "_")
+        ki
+        (substTyVarType i i' . substTyVarType s (s <> "_") $ ty)
   | otherwise = TyLam s ki (substTyVarType i i' ty)
 substTyVarType i i' (TyAll s ki ty)
   | s == i' = TyAll (s <> "_") ki (substTyVarType i i' . substTyVarType s (s <> "_") $ ty)
@@ -337,8 +337,8 @@ parseTerm :: forall lang. (LanguageParser lang) => Parser (Expr lang)
 parseTerm = P.label "Term" $ makeExprParser pAtom ops
   where
     ops =
-      [InfixL (return ExprApp)] :
-      operators @lang
+      [InfixL (return ExprApp)]
+        : operators @lang
 
     pAbs :: Parser (Expr lang)
     pAbs = do

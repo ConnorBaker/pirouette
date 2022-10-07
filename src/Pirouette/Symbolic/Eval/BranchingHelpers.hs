@@ -34,50 +34,50 @@ ifThenElseBranching isTrue trueTm isFalse falseTm isEq c t e excess =
           | isEq eq,
             Just x1 <- termIsMeta x,
             Just y1 <- termIsMeta y ->
-            pure $
-              Just
-                [ -- either they are equal
-                  Branch (And [VarEq x1 y1]) t',
-                  -- or they are not
-                  Branch (And [NonInlinableSymbolNotEq x y]) e'
-                ]
+              pure $
+                Just
+                  [ -- either they are equal
+                    Branch (And [VarEq x1 y1]) t',
+                    -- or they are not
+                    Branch (And [NonInlinableSymbolNotEq x y]) e'
+                  ]
           | isEq eq,
             Just x1 <- termIsMeta x,
             isStuckBuiltin y ->
-            pure $
-              Just
-                [ -- either they are equal
-                  Branch (And [Assign x1 y]) t',
-                  -- or they are not
-                  Branch (And [NonInlinableSymbolNotEq x y]) e'
-                ]
+              pure $
+                Just
+                  [ -- either they are equal
+                    Branch (And [Assign x1 y]) t',
+                    -- or they are not
+                    Branch (And [NonInlinableSymbolNotEq x y]) e'
+                  ]
           | isEq eq,
             isStuckBuiltin x,
             Just y1 <- termIsMeta y ->
-            pure $
-              Just
-                [ -- either they are equal
-                  Branch (And [Assign y1 x]) t',
-                  -- or they are not
-                  Branch (And [NonInlinableSymbolNotEq y x]) e'
-                ]
+              pure $
+                Just
+                  [ -- either they are equal
+                    Branch (And [Assign y1 x]) t',
+                    -- or they are not
+                    Branch (And [NonInlinableSymbolNotEq y x]) e'
+                  ]
           | isEq eq,
             isStuckBuiltin x,
             isStuckBuiltin y ->
-            pure $
-              Just
-                [ -- either they are equal
-                  Branch (And [NonInlinableSymbolEq x y]) t',
-                  -- or they are not
-                  Branch (And [NonInlinableSymbolNotEq x y]) e'
-                ]
+              pure $
+                Just
+                  [ -- either they are equal
+                    Branch (And [NonInlinableSymbolEq x y]) t',
+                    -- or they are not
+                    Branch (And [NonInlinableSymbolNotEq x y]) e'
+                  ]
         _
           | Just v <- termIsMeta c ->
-            pure $
-              Just
-                [ -- c is True => t is executed
-                  Branch (And [Assign v trueTm]) t',
-                  -- c is False => e is executed
-                  Branch (And [Assign v falseTm]) e'
-                ]
+              pure $
+                Just
+                  [ -- c is True => t is executed
+                    Branch (And [Assign v trueTm]) t',
+                    -- c is False => e is executed
+                    Branch (And [Assign v falseTm]) e'
+                  ]
         _ -> pure Nothing

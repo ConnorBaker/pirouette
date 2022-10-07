@@ -156,7 +156,8 @@ defUNSubst (DTypeDef n) = DTypeDef <$> unTypeDefSubst n
 
 unTypeDefSubst :: TypeDef lang -> UNSubstM (TypeDef lang)
 unTypeDefSubst (Datatype ki vs dest cons) =
-  Datatype ki <$> mapM (\(n, k) -> (,k) <$> unNameSubst n) vs
+  Datatype ki
+    <$> mapM (\(n, k) -> (,k) <$> unNameSubst n) vs
     <*> unNameSubst dest
     <*> mapM (\(n, ty) -> (,) <$> unNameSubst n <*> typeUNSubst ty) cons
 

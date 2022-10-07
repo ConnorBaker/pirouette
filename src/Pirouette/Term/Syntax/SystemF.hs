@@ -105,9 +105,9 @@ tyUnwrapBinders :: Int -> AnnType ann tyVar -> ([(Ann ann, Kind)], AnnType ann t
 tyUnwrapBinders n ty
   | n <= 0 = ([], ty)
   | otherwise = case ty of
-    TyLam a k rest -> first ((a, k) :) $ tyUnwrapBinders (n - 1) rest
-    TyAll a k rest -> first ((a, k) :) $ tyUnwrapBinders (n - 1) rest
-    _ -> ([], ty)
+      TyLam a k rest -> first ((a, k) :) $ tyUnwrapBinders (n - 1) rest
+      TyAll a k rest -> first ((a, k) :) $ tyUnwrapBinders (n - 1) rest
+      _ -> ([], ty)
 
 -- | Given a @t : AnnType ann ty@, returns how many arguments would we
 --  have to provide a @AnnTerm@ of type @t@ to fully saturate it. This includes

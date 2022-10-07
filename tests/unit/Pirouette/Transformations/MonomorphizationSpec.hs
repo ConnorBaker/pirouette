@@ -118,7 +118,9 @@ tests =
             ]
        in forM_ cases $ \(ty, exp) ->
             unless (isSpecArg ty == exp) $
-              assertFailure $ show $ pretty ty,
+              assertFailure $
+                show $
+                  pretty ty,
     -- Monomorphized declarations typecheck
     testCase "monomorphize sampleUDefs has no type applications" $
       let res = monomorphize sampleUDefs
@@ -130,7 +132,8 @@ tests =
                   let nonSpecTypes :: [Type Ex]
                       nonSpecTypes = [ty | ty <- universeBi fd, not (isSpecArg ty)]
                   unless (null nonSpecTypes) $
-                    assertFailure $ "Def of: " ++ show name ++ " has non specialized types: " ++ show (pretty nonSpecTypes)
+                    assertFailure $
+                      "Def of: " ++ show name ++ " has non specialized types: " ++ show (pretty nonSpecTypes)
                 _ -> return (),
     -- Now we make sure that the function specialization requests are working as we expect:
     testGroup

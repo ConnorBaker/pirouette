@@ -107,31 +107,31 @@ translateTerm knownNames (Raw.App var args) = case var of
     case defn of
       DConstructor ix tname
         | name `S.notMember` knownNames ->
-          throwError $ "translateApp: Unknown constructor '" <> show name <> "'"
+            throwError $ "translateApp: Unknown constructor '" <> show name <> "'"
         | otherwise -> do
-          -- bring in the type information
-          Datatype {constructors} <- lift $ lift $ prtTypeDefOf tname
-          -- we assume that if everything is well-typed
-          -- the constructor actually exists, hence the use of (!!)
-          let cstrTy = snd (constructors !! ix)
-              -- now we split the arguments as required for the constructor
-              (tyArgs, restArgs) = splitAt (Raw.tyPolyArity cstrTy) args
-              -- and instantiate the type
-              instTy = Raw.tyInstantiateN (typeToMeta cstrTy) (map (\(Raw.TyArg ty) -> ty) tyArgs)
-              (argTys, resultTy) = Raw.tyFunArgs instTy
-          -- there must be exactly as many arguments as required
-          guard (length argTys == length restArgs)
-          -- finally build the term
-          PureSMT.app
-            <$> (PureSMT.as (PureSMT.symbol (toSmtName name)) <$> translateType resultTy)
-            <*> mapM (translateArg knownNames) restArgs
+            -- bring in the type information
+            Datatype {constructors} <- lift $ lift $ prtTypeDefOf tname
+            -- we assume that if everything is well-typed
+            -- the constructor actually exists, hence the use of (!!)
+            let cstrTy = snd (constructors !! ix)
+                -- now we split the arguments as required for the constructor
+                (tyArgs, restArgs) = splitAt (Raw.tyPolyArity cstrTy) args
+                -- and instantiate the type
+                instTy = Raw.tyInstantiateN (typeToMeta cstrTy) (map (\(Raw.TyArg ty) -> ty) tyArgs)
+                (argTys, resultTy) = Raw.tyFunArgs instTy
+            -- there must be exactly as many arguments as required
+            guard (length argTys == length restArgs)
+            -- finally build the term
+            PureSMT.app
+              <$> (PureSMT.as (PureSMT.symbol (toSmtName name)) <$> translateType resultTy)
+              <*> mapM (translateArg knownNames) restArgs
       -- PureSMT.app (PureSMT.symbol (toSmtName name)) <$> mapM (translateArg knownNames) restArgs
       DFunDef _
         | name `S.notMember` knownNames ->
-          throwError $ "translateApp: Unknown function '" <> show name <> "'"
+            throwError $ "translateApp: Unknown function '" <> show name <> "'"
         | otherwise -> do
-          tell UsedSomeUFs
-          PureSMT.app (PureSMT.symbol (toSmtName name)) <$> mapM (translateArg knownNames) args
+            tell UsedSomeUFs
+            PureSMT.app (PureSMT.symbol (toSmtName name)) <$> mapM (translateArg knownNames) args
       DTypeDef _ ->
         throwError "translateApp: Type name in function name"
       -- DO NEVER TRY TO TRANSLATE THESE!!

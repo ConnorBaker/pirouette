@@ -133,23 +133,24 @@ typeMetas = foldMap go
     go _ = Set.empty
 
 -- | The supported type definitions. At this point, we only support datatype definitions.
-data TypeDef lang = -- | Define a new datatype. For example:
-  --
-  --   > either = Datatype
-  --   >   { kind          = * -> * -> *
-  --   >   , typeVariables = [("a", *), ("b", *)]
-  --   >   , destructor    = "Either_match"
-  --   >   , constructors  = [("Left", TyAll a b . (a -> Either a b))
-  --   >                     ,("Right", TyAll a b . (b -> Either a b))]
-  --   >   }
-  Datatype
-  { kind :: SystF.Kind,
-    -- | The 'typeVariables' field is here because it makes the computation of the type of destructors
-    --  much easier. These type variables are declared with 'SystF.TyAll' on the types of the 'constructors'.
-    typeVariables :: [(Name, SystF.Kind)],
-    destructor :: Name,
-    constructors :: [(Name, Type lang)]
-  }
+data TypeDef lang
+  = -- | Define a new datatype. For example:
+    --
+    --   > either = Datatype
+    --   >   { kind          = * -> * -> *
+    --   >   , typeVariables = [("a", *), ("b", *)]
+    --   >   , destructor    = "Either_match"
+    --   >   , constructors  = [("Left", TyAll a b . (a -> Either a b))
+    --   >                     ,("Right", TyAll a b . (b -> Either a b))]
+    --   >   }
+    Datatype
+    { kind :: SystF.Kind,
+      -- | The 'typeVariables' field is here because it makes the computation of the type of destructors
+      --  much easier. These type variables are declared with 'SystF.TyAll' on the types of the 'constructors'.
+      typeVariables :: [(Name, SystF.Kind)],
+      destructor :: Name,
+      constructors :: [(Name, Type lang)]
+    }
   deriving (Eq, Ord, Show, Data)
 
 instance (LanguageBuiltins lang) => AlphaEq (TypeDef lang) where

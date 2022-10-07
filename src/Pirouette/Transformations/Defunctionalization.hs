@@ -234,8 +234,8 @@ defunCalls toDefun decls@PrtUnorderedDefs {..} = do
         -- to be defunctionalized, lets do it!
         goApp ctx (SystF.Free (TermSig name)) args
           | Just hofsList <- M.lookup name toDefun = do
-            args' <- forM (zip3 [0 ..] hofsList args) (replaceArg ctx)
-            pure $ SystF.Free (TermSig name) `SystF.App` args'
+              args' <- forM (zip3 [0 ..] hofsList args) (replaceArg ctx)
+              pure $ SystF.Free (TermSig name) `SystF.App` args'
         goApp _ term args = pure $ term `SystF.App` args
 
     replaceArg ::
@@ -382,7 +382,7 @@ replaceApply applyFun = go 0
       | SystF.Bound _ n <- var,
         n == idx,
         not $ null args =
-        SystF.App (SystF.Free (TermSig applyFun)) (SystF.TermArg (SystF.App var []) : args')
+          SystF.App (SystF.Free (TermSig applyFun)) (SystF.TermArg (SystF.App var []) : args')
       | otherwise = SystF.App var args'
       where
         args' = recurArg <$> args

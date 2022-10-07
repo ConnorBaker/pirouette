@@ -47,5 +47,6 @@ checkDeBruijnIndices = do
       case n of
         SystF.Bound _ i ->
           when (i >= term) $
-            Left $ "Referencing var " ++ show i ++ " with only " ++ show term ++ " lams"
+            Left $
+              "Referencing var " ++ show i ++ " with only " ++ show term ++ " lams"
         _ -> return ()

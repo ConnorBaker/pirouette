@@ -213,8 +213,8 @@ instance LanguageSMT Ex where
     | termIsConstant e = True
   isStuckBuiltin (SystF.App (SystF.Free (Builtin op)) args)
     | exTermIsArithOp op || exTermIsStringOp op =
-      let args' = map (\(SystF.TermArg a) -> a) args
-       in all isStuckBuiltin args' && not (all termIsConstant args')
+        let args' = map (\(SystF.TermArg a) -> a) args
+         in all isStuckBuiltin args' && not (all termIsConstant args')
   isStuckBuiltin tm = isJust (termIsMeta tm)
 
 pattern BConstant :: Bool -> TermMeta Ex meta
@@ -243,7 +243,7 @@ instance LanguageSymEval Ex where
   -- translate arithmetic operations applied to constants
   branchesBuiltinTerm op _translator [SystF.TermArg (IConstant x), SystF.TermArg (IConstant y)]
     | exTermIsArithOp op =
-      pure $ Just [Branch mempty (apply op)]
+        pure $ Just [Branch mempty (apply op)]
     where
       apply TermAdd = IConstant (x + y)
       apply TermSub = IConstant (x - y)

@@ -26,7 +26,8 @@ typeCheckDecls decls = do
   _ <- flip Map.traverseWithKey decls $ \(_, name) decl -> case decl of
     DFunDef FunDef {funBody, funTy} ->
       flip runReaderT ((decls, []), [DeclPath name]) $
-        void $ typeCheckTerm funTy funBody
+        void $
+          typeCheckTerm funTy funBody
     _ -> pure ()
   pure ()
 
@@ -39,7 +40,8 @@ typeCheckFunDef ::
   Either (TypeError lang) ()
 typeCheckFunDef decls nm FunDef {funBody, funTy} =
   flip runReaderT ((decls, []), [DeclPath nm]) $
-    void $ typeCheckTerm funTy funBody
+    void $
+      typeCheckTerm funTy funBody
 
 data TypeError lang = TypeError
   { typeErrorPath :: ErrorPath,
@@ -283,9 +285,11 @@ eqType ::
 eqType ty1@(TyApp h1 args1) ty2@(TyApp h2 args2) = do
   within TypePathAppHead $
     unless (eqVar h1 h2) $
-      err $ TypeAppDifferentHeads ty1 ty2
+      err $
+        TypeAppDifferentHeads ty1 ty2
   unless (length args1 == length args2) $
-    err $ TypeAppArgumentLength ty1 ty2
+    err $
+      TypeAppArgumentLength ty1 ty2
   forM_ (zip3 [1 ..] args1 args2) $ \(i, arg1, arg2) ->
     within (TypePathAppArg i) $
       eqType arg1 arg2
@@ -320,7 +324,8 @@ eqKind ::
 eqKind ki1 ki2 =
   within TypePathKind $
     unless (ki1 == ki2) $
-      err $ KindJustDifferent ki1 ki2
+      err $
+        KindJustDifferent ki1 ki2
 
 -- | Check equality of variables.
 -- Annotations on bound variables are not checked,

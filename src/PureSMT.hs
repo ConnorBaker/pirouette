@@ -86,8 +86,8 @@ solveOpts opts ctx = unsafePerformIO $ do
       -- TODO: what happens in an exception? For now, we just loose a solver but we shouldn't
       -- add it to the pool of workers and just retry the problem. In a future implementation
       -- we could try launching it again
-      --pid <- unsafeSolverPid solver
-      --print pid
+      -- pid <- unsafeSolverPid solver
+      -- print pid
       solveProblem @domain problem solver
     pushMStack ms allProcs
     return r

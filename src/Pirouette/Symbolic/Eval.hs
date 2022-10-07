@@ -359,11 +359,11 @@ symEvalOneStep t@(R.App hd args) = case hd of
             -- hence the involved loop here
             findLoop v
               | Just (C.Assign _ tm) <- find (findAssignment v) atomics =
-                Just tm
+                  Just tm
               | Just (C.VarEq _ other) <- find (findEq v) atomics =
-                findLoop other
+                  findLoop other
               | otherwise =
-                Nothing
+                  Nothing
         case findLoop vr of
           Nothing -> justEvaluateArgs
           Just lp -> signalEvaluation >> pure lp
@@ -416,10 +416,10 @@ symEvalMatchesFirst f g exprs = go [] exprs
     go acc (x : xs)
       | Nothing <- f x = go (x : acc) xs
       | Just t <- f x = do
-        mayTyName <- lift $ isDestructor t
-        case mayTyName of
-          Just tyName -> (reverse acc ++) . (: xs) . g <$> symEvalDestructor t tyName
-          Nothing -> go (x : acc) xs
+          mayTyName <- lift $ isDestructor t
+          case mayTyName of
+            Just tyName -> (reverse acc ++) . (: xs) . g <$> symEvalDestructor t tyName
+            Nothing -> go (x : acc) xs
 
 isDestructor ::
   forall lang m.

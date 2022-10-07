@@ -175,11 +175,13 @@ data SymEvalSt lang = SymEvalSt
 
 instance (LanguagePretty lang) => Pretty (SymEvalSt lang) where
   pretty SymEvalSt {..} =
-    "Constraints are" <+> pretty sestConstraint <> "\n"
-      <> "in environnement"
+    "Constraints are"
+      <+> pretty sestConstraint
+        <> "\n"
+        <> "in environnement"
       <+> pretty (M.toList sestGamma)
-      <> "\n"
-      <> "with a counter at"
+        <> "\n"
+        <> "with a counter at"
       <+> pretty sestFreshCounter
       <+> "and"
       <+> pretty (sestConsumedFuel sestStatistics)

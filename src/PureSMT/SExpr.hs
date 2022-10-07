@@ -94,14 +94,14 @@ showsSExprHaskellish = fst . go
         List [cstr] -> go cstr
         t@(List (Atom ":" : _))
           | Just lst <- list t ->
-            ( showChar '['
-                . drop 2
-                . foldr
-                  (\e m -> showString ", " . fst (go e) . m)
-                  (showChar ']')
-                  lst,
-              False
-            )
+              ( showChar '['
+                  . drop 2
+                  . foldr
+                    (\e m -> showString ", " . fst (go e) . m)
+                    (showChar ']')
+                    lst,
+                False
+              )
         List (cstr : args) ->
           let (showCstr, _) = go cstr
            in ( showCstr
@@ -143,7 +143,7 @@ sexprToVal expr =
     List [Atom "/", x, y]
       | Int a <- sexprToVal x,
         Int b <- sexprToVal y ->
-        Real (a % b)
+          Real (a % b)
     _ -> Other expr
   where
     binLit cs = do
@@ -170,8 +170,8 @@ ppSExpr = go 0
         e : more
           | n <= 0 -> Nothing
           | otherwise -> case e of
-            Atom x -> (showString x :) <$> small (n - 1) more
-            _ -> Nothing
+              Atom x -> (showString x :) <$> small (n - 1) more
+              _ -> Nothing
 
     go :: Int -> SExpr -> ShowS
     go n ex =
@@ -179,9 +179,10 @@ ppSExpr = go 0
         Atom x -> showString x
         List es
           | Just fs <- small 5 es ->
-            showChar '(' . many (intersperse (showChar ' ') fs) . showChar ')'
+              showChar '(' . many (intersperse (showChar ' ') fs) . showChar ')'
         List (Atom x : es) ->
-          showString "(" . showString x
+          showString "("
+            . showString x
             . many (map (new (n + 3)) es)
             . showString ")"
         List es -> showString "(" . many (map (new (n + 2)) es) . showString ")"

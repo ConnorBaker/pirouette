@@ -83,10 +83,10 @@ transitiveDepsOfCached = go S.empty
     computeDeps stack space n0
       | n0 `S.member` stack = return S.empty
       | otherwise = do
-        deps0 <- directDepsOf space n0
-        let stack' = S.insert n0 stack
-        let deps1 = S.map argToNamespace deps0
-        S.unions . (deps0 :) <$> mapM (uncurry $ go stack') (S.toList deps1)
+          deps0 <- directDepsOf space n0
+          let stack' = S.insert n0 stack
+          let deps1 = S.map argToNamespace deps0
+          S.unions . (deps0 :) <$> mapM (uncurry $ go stack') (S.toList deps1)
 
 -- *** Utility Functions
 

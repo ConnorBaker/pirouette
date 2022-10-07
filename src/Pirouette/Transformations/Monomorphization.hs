@@ -153,10 +153,10 @@ specFunApp toMono (SystF.App (SystF.Free (TermSig name)) args)
     let tyArgs = map (fromJust . SystF.fromTyArg) $ takeWhile SystF.isTyArg args,
     not (null tyArgs),
     all isSpecArg tyArgs = do
-    let (specArgs, remainingArgs) = SystF.splitArgs (length tyArgs) args
-        speccedName = genSpecName specArgs name
-    tell $ maybe [] (\someDef -> pure $ SpecRequest name someDef specArgs) mSomeDef
-    pure $ SystF.Free (TermSig speccedName) `SystF.App` remainingArgs
+      let (specArgs, remainingArgs) = SystF.splitArgs (length tyArgs) args
+          speccedName = genSpecName specArgs name
+      tell $ maybe [] (\someDef -> pure $ SpecRequest name someDef specArgs) mSomeDef
+      pure $ SystF.Free (TermSig speccedName) `SystF.App` remainingArgs
 specFunApp _ x = pure x
 
 -- | Specializes a type application of the form
@@ -173,10 +173,10 @@ specTyApp toMono (SystF.TyApp (SystF.Free (TySig name)) tyArgs)
   | Just mSomeDef <- (TypeNamespace, name) `M.lookup` toMono,
     not (null tyArgs),
     all isSpecArg tyArgs = do
-    let (specArgs, remainingArgs) = splitAt (length tyArgs) tyArgs
-        speccedName = genSpecName specArgs name
-    tell $ maybe [] (\someDef -> pure $ SpecRequest name someDef specArgs) mSomeDef
-    pure $ SystF.Free (TySig speccedName) `SystF.TyApp` remainingArgs
+      let (specArgs, remainingArgs) = splitAt (length tyArgs) tyArgs
+          speccedName = genSpecName specArgs name
+      tell $ maybe [] (\someDef -> pure $ SpecRequest name someDef specArgs) mSomeDef
+      pure $ SystF.Free (TySig speccedName) `SystF.TyApp` remainingArgs
 specTyApp _ x = pure x
 
 specRequestPartialApp :: SpecRequest lang -> Term lang

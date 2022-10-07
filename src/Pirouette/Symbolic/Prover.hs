@@ -175,9 +175,9 @@ worker resultVar bodyTerm assumeTerm proveTerm = do
           Left e -> pure $ Left e
           Right (c, _)
             | isStuckBuiltin t || isWHNF ->
-              pure $ Right c
+                pure $ Right c
             | otherwise ->
-              pure $ Left "not stuck term"
+                pure $ Left "not stuck term"
   -- ISSUE!! In PlutusIR, if we don't want to have builtin booleans because of the plutus
   -- compiler being annoying with them, we can't just 'translate proveTerm', for instance,
   -- since it might be @App (Free (TermSig "False")) []@, which will translate

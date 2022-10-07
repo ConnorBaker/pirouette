@@ -55,11 +55,11 @@ fixContextName :: Map.Map (Namespace, Name) (Definition lang) -> Namespace -> Na
 fixContextName inScope space nm
   | Just _ <- nameUnique nm = nm -- if it has a unique, don't change it
   | otherwise =
-    let sameName = Map.filterWithKey (\(s, k) _ -> nameString k == nameString nm && s == space) inScope
-     in case Map.size sameName of
-          0 -> nm
-          1 -> snd $ fst $ head $ Map.toList sameName -- we know we have just one
-          _ -> error $ "cannot fix " <> T.unpack (nameString nm)
+      let sameName = Map.filterWithKey (\(s, k) _ -> nameString k == nameString nm && s == space) inScope
+       in case Map.size sameName of
+            0 -> nm
+            1 -> snd $ fst $ head $ Map.toList sameName -- we know we have just one
+            _ -> error $ "cannot fix " <> T.unpack (nameString nm)
 
 fixContextTermVar ::
   Map.Map (Namespace, Name) (Definition lang) ->

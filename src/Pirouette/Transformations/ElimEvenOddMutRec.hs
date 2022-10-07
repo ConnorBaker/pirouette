@@ -71,12 +71,12 @@ elimEvenOddMutRec udefs = runIdentity $ do
         solveTermDeps ctr nss@(n : ns)
           | ctr == length nss = prtError $ PEMutRecDeps nss
           | otherwise = do
-            isRec <- termIsRecursive n
-            if isRec
-              then solveTermDeps (ctr + 1) (ns ++ [n])
-              else
-                mapM_ (expandDefInSt n) ns
-                  >> snoc n <$> solveTermDeps 0 ns
+              isRec <- termIsRecursive n
+              if isRec
+                then solveTermDeps (ctr + 1) (ns ++ [n])
+                else
+                  mapM_ (expandDefInSt n) ns
+                    >> snoc n <$> solveTermDeps 0 ns
 
         expandDefInSt :: (Monad m) => Name -> Name -> StateT (PrtUnorderedDefs lang) m ()
         expandDefInSt n m = do

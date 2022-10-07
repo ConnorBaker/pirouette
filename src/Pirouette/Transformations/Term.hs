@@ -204,9 +204,9 @@ chooseHeadCase t ty args fstArg =
     blindDest :: Type lang -> TypeDef lang -> Term lang
     blindDest tyOut (Datatype _ _ dest cons) =
       SystF.App (SystF.Free (TermSig dest)) $
-        SystF.TermArg (SystF.termPure (SystF.Bound (fromString "i") 1)) :
-        SystF.TyArg tyOut :
-        map (SystF.TermArg . consCase) cons
+        SystF.TermArg (SystF.termPure (SystF.Bound (fromString "i") 1))
+          : SystF.TyArg tyOut
+          : map (SystF.TermArg . consCase) cons
 
     consCase :: (Name, Type lang) -> Term lang
     consCase (n, consTy) =

@@ -51,9 +51,9 @@ trDataDecl sName (DataDecl vars cons mDest) = do
   let destName = fromString $ fromMaybe ("match_" ++ sName) mDest
   constrs <- mapM (\(n, ty) -> (fromString n,) <$> trTypeWithEnv (reverse vars) ty) cons
   return $
-    ((TypeNamespace, name), DTypeDef $ Datatype ki (map (first fromString) vars) destName constrs) :
-    ((TermNamespace, destName), DDestructor name) :
-    zipWith (\n i -> ((TermNamespace, fst n), DConstructor i name)) constrs [0 ..]
+    ((TypeNamespace, name), DTypeDef $ Datatype ki (map (first fromString) vars) destName constrs)
+      : ((TermNamespace, destName), DDestructor name)
+      : zipWith (\n i -> ((TermNamespace, fst n), DConstructor i name)) constrs [0 ..]
 
 trTypeWithEnv :: [(String, SystF.Kind)] -> Ty lang -> TrM (Type lang)
 trTypeWithEnv env ty = do
