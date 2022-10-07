@@ -1,9 +1,12 @@
 name: Setup
-description: "Setup the GitHub Actions environment with nix."
+description: Setup the GitHub Actions environment with nix.
 
 inputs:
   REPO_AUTH_TOKEN:
-    description: "The GitHub repository authentication token."
+    description: The GitHub repository authentication token.
+    required: true
+  CACHIX_AUTH_TOKEN:
+    description: The Cachix authentication token.
     required: true
 
 runs:
@@ -25,5 +28,14 @@ runs:
           fallback = true
           keep-outputs = false
           keep-derivations = false
-          substituters = https://cache.iog.io https://iohk.cachix.org https://cache.nixos.org/ https://nix-community.cachix.org https://haskell-language-server.cachix.org
-          trusted-public-keys = hydra.iohk.io:f/Ea+s+dFdN+3Y/G+FDgSq+a5NEWhJGzdjvKNGv0/EQ= iohk.cachix.org-1:DpRUyj7h7V830dp/i6Nti+NEO2/nhblbov/8MW7Rqoo= cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY= nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs= haskell-language-server.cachix.org-1:juFfHrwkOxqIOZShtC4YC1uT1bBcq2RSvC7OMKx0Nz8=
+          substituters = https://haskell-library-pirouette.cachix.org https://cache.iog.io https://iohk.cachix.org https://nix-community.cachix.org https://haskell-language-server.cachix.org https://cache.nixos.org/
+          trusted-public-keys = haskell-library-pirouette.cachix.org-1:QAmaIrajvcVqadDrc3NfSQDpNF3CVu3SI4EdsQ4zDPw= hydra.iohk.io:f/Ea+s+dFdN+3Y/G+FDgSq+a5NEWhJGzdjvKNGv0/EQ= iohk.cachix.org-1:DpRUyj7h7V830dp/i6Nti+NEO2/nhblbov/8MW7Rqoo= nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs= haskell-language-server.cachix.org-1:juFfHrwkOxqIOZShtC4YC1uT1bBcq2RSvC7OMKx0Nz8= cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY=
+
+    - uses: cachix/cachix-action@v10
+      with:
+        name: haskell-library-pirouette
+        authToken: ${{ inputs.CACHIX_AUTH_TOKEN }}
+
+    - name: Enable problem matcher
+      shell: bash
+      run: echo "::add-matcher::./.github/haskell-problem-matcher.json"
