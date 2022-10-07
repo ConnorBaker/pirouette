@@ -2,6 +2,8 @@
   description = "A flake for pirouette";
 
   nixConfig = {
+    accept-flake-config = true;
+    allow-import-from-derivation = true;
     extra-substituters = [
       "https://haskell-library-pirouette.cachix.org"
       "https://cache.iog.io"
